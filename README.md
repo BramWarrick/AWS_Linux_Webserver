@@ -14,7 +14,7 @@ sudo dpkg-reconfigure tzdata```
 
 ## Add `grader`
 ```
-sudo adduser grader```
+sudo adduser grader --disabled-password```
 
 - Answer questions and enter password
 
