@@ -36,6 +36,11 @@ sudo nano /etc/sudoers.d/grader```
 - Paste `grader ALL=(ALL) NOPASSWD:ALL`, Save, Exit
 ```
 
+## SSH Port change
+```
+sudo nano /etc/ssh/sshd_config```
+- Find `#port 22` and change to `port 2200`
+	- Note removal of `#` from the line
 
 ## Firewall
 ```
