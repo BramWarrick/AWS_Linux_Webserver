@@ -30,21 +30,22 @@ nano ~/.ssh/authorized_keys```
 - [To Do] Add instructions for authorized keys
 
 ### Provide sudo permissions to connect externally
-- [To Do] Determine how this is completed on AWS - it IS different than coursework
 ```
-sudo cp /etc/sudoers.d/vagrant /etc/sudoers.d/grader
-sudo nano /etc/sudoers/d/grader
+sudo touch /etc/sudoers.d/grader
+sudo nano /etc/sudoers.d/grader```
+- Paste `grader ALL=(ALL) NOPASSWD:ALL`, Save, Exit
 ```
-- Modify reference to user
 
 
 ## Firewall
 ```
 sudo ufw status```
+
 - Confirm status - initial state should be disabled
+
+```
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-
 sudo ufw allow ssh
 sudo ufw allow 2200/tcp
 sudo ufw allow ntp
