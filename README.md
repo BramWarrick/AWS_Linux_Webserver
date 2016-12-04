@@ -1,15 +1,16 @@
-vagrant up
-vagrant ssh
+# AWS_Linux_Webserver
 
--------------------
 ## Initial Set-Up
-` Add instructions to remove root remote access
+- [To Do] Add instructions to remove root remote access
 ```
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get autoremove
-
-sudo apt-get install finger```
+sudo dpkg-reconfigure tzdata```
+- User Prompt
+	- Scroll to the bottom of Continents list
+	- Select `Etc`; in the second list
+	- Select `UTC`
 
 ## Add `grader`
 ```
@@ -17,24 +18,40 @@ sudo adduser grader```
 
 - Answer questions and enter password
 
+### Provide permissions to connect externally
 ```
-finger grader
 sudo su - grader
 mkdir .ssh
 chmod 700 .ssh
 touch .ssh/authorized_keys
 chmod 600 .ssh/authorized_keys
-nano ~/.ssh/authorized_keys
+nano ~/.ssh/authorized_keys```
 
+- [To Do] Add instructions for authorized keys
 
+### Provide sudo permissions to connect externally
+- [To Do] Determine how this is completed on AWS - it IS different than coursework
+```
 sudo cp /etc/sudoers.d/vagrant /etc/sudoers.d/grader
 sudo nano /etc/sudoers/d/grader
 ```
-
 - Modify reference to user
 
+
 ## Firewall
-- Add steps to shut down extraneous access
+```
+sudo ufw status```
+- Confirm status - initial state should be disabled
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+sudo ufw allow ssh
+sudo ufw allow 2200/tcp
+sudo ufw allow ntp
+sudo ufw allow www
+sudo ufw enable
+sudo ufw status```
+- Confirm status, should now be enabled with details that align with configuration
 
 
 ## Install Apache
