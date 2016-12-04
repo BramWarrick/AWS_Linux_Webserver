@@ -6,7 +6,8 @@
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get autoremove
-sudo dpkg-reconfigure tzdata```
+sudo dpkg-reconfigure tzdata
+```
 - User Prompt
 	- Scroll to the bottom of Continents list
 	- Select `Etc`; in the second list
@@ -14,7 +15,8 @@ sudo dpkg-reconfigure tzdata```
 
 ## Add `grader`
 ```
-sudo adduser grader --disabled-password```
+sudo adduser grader --disabled-password
+```
 
 - Answer questions and enter password
 
@@ -25,26 +27,29 @@ mkdir .ssh
 chmod 700 .ssh
 touch .ssh/authorized_keys
 chmod 600 .ssh/authorized_keys
-nano ~/.ssh/authorized_keys```
+nano ~/.ssh/authorized_keys
+```
 
 - [To Do] Add instructions for authorized keys
 
 ### Provide sudo permissions to connect externally
 ```
 sudo touch /etc/sudoers.d/grader
-sudo nano /etc/sudoers.d/grader```
-- Paste `grader ALL=(ALL) NOPASSWD:ALL`, Save, Exit
+sudo nano /etc/sudoers.d/grader
 ```
+- Paste `grader ALL=(ALL) NOPASSWD:ALL`, Save, Exit
 
 ## SSH Port change
 ```
-sudo nano /etc/ssh/sshd_config```
+sudo nano /etc/ssh/sshd_config
+```
 - Find `#port 22` and change to `port 2200`
 	- Note removal of `#` from the line
 
 ## Firewall
 ```
-sudo ufw status```
+sudo ufw status
+```
 
 - Confirm status - initial state should be disabled
 
@@ -56,51 +61,61 @@ sudo ufw allow 2200/tcp
 sudo ufw allow ntp
 sudo ufw allow www
 sudo ufw enable
-sudo ufw status```
+sudo ufw status
+```
 - Confirm status, should now be enabled with details that align with configuration
 
 
-## Install Apache
+## Apache - Install
 ```
-sudo apt-get install apache2```
+sudo apt-get install apache2
+```
 
 - Confirm page works - default apache page
 
-## mod_wsgi
+## mod_wsgi - Install and Configure
 ### Install 
 ```
-sudo apt-get install libapache2-mod-wsgi```
+sudo apt-get install libapache2-mod-wsgi
+```
 
 ### Configure
 ```
-sudo nano /etc/apache2/sites-enabled/000-default.conf```
-
-Add 
+sudo nano /etc/apache2/sites-enabled/000-default.conf
 ```
-WSGIScriptAlias / /var/www/html/myapp.wsgi```
+
+- Add 
+```
+WSGIScriptAlias / /var/www/html/myapp.wsgi
+```
 to end of `<VirtualHost>` block
 
----- Restart Apache ----
+- Restart Apache
 ```
-sudo apache2ctl restart```
+sudo apache2ctl restart
+```
 
 
-## PostGreSQL
+## PostGreSQL - Install
 ### Install
 ```
-sudo apt-get install postgresql```
+sudo apt-get install postgresql
+```
 
 
 ## Python modules
-- SQLAlchemy
+### SQLAlchemy
 ```
-sudo pip install SQLAlchemy```
-
-- Flask
+sudo pip install SQLAlchemy
 ```
-sudo pip install Flask```
 
-- oauth2client (google)
+### Flask
+```
+sudo pip install Flask
+```
+
+### oauth2client (google)
 ```
 sudo apt-get update
-sudo apt-get install python-oauth2client```# AWS_Linux_Webserver
+sudo apt-get install python-oauth2client
+```
