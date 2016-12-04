@@ -51,7 +51,7 @@ sudo nano /etc/ssh/sshd_config
 sudo ufw status
 ```
 
-[ ] Confirm status - initial state should be disabled
+- [ ] Confirm status - initial state should be disabled
 
 ```
 sudo ufw default deny incoming
@@ -63,7 +63,7 @@ sudo ufw allow www
 sudo ufw enable
 sudo ufw status
 ```
-[ ] Confirm status, should now be enabled with details that align with configuration
+- [ ] Confirm status, should now be enabled with details that align with configuration
 
 
 ## Apache - Install
@@ -71,7 +71,7 @@ sudo ufw status
 sudo apt-get install apache2
 ```
 
-[ ] Confirm page works - default apache page
+- [ ] Confirm page works - default apache page
 
 ## mod_wsgi - Install and Configure
 ### Install 
@@ -94,14 +94,14 @@ to end of `<VirtualHost>` block
 ```
 sudo apache2ctl restart
 ```
-[ ] Confirm page works - no errors
+- [ ] Confirm page works - no errors
 
 ## PostGreSQL - Install
 ### Install
 ```
 sudo apt-get install postgresql
 ```
-[ ] Confirm page works - no errors
+- [ ] Confirm page works - no errors
 
 ## Python modules
 ### SQLAlchemy
