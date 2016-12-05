@@ -1,7 +1,6 @@
 # AWS Linux Webserver
 
 ## Initial Set-Up
-- [To Do] Add instructions to remove root remote access
 ```
 sudo apt-get update
 sudo apt-get dist-upgrade
@@ -14,14 +13,13 @@ sudo dpkg-reconfigure tzdata
 	- Select `Etc`; in the second list
 	- Select `UTC`
 
-## Add `grader` and give sudo permissions
+### Add `grader`
 ```
 sudo adduser grader sudo --disabled-password
 ```
-
 - [ ] Answer questions and enter password
 
-### Provide permissions to connect externally
+#### Provide permissions to connect externally
 ```
 sudo su - grader
 mkdir .ssh
@@ -31,7 +29,18 @@ chmod 600 .ssh/authorized_keys
 nano ~/.ssh/authorized_keys
 ```
 
-- [To Do] Add instructions for authorized keys
+### [To Do] Add instructions for authorized keys
+
+### Remove SSH access from root user
+- Only once an additional su user has been created
+	- [ ] sudo nano /etc/ssh/sshd_config
+	- [ ] Find `#PermitRootLogin no`
+		- [ ] Remove `#`
+		- [ ] Save and Exit
+	- [ ] Restart SSH daemon service
+		- `/etc/init.d/sshd restart`
+- Reference:
+	- http://www.tecmint.com/disable-or-enable-ssh-root-login-and-limit-ssh-access-in-linux/
 
 ### Provide sudo permissions - back up plan
 ```
@@ -44,15 +53,16 @@ sudo usermod -a -G sudo grader
 sudo nano /etc/ssh/sshd_config
 ```
 - [ ] Find `#port 22` and change to `port 2200`
-	- Note removal of `#` from the line
+	- [ ] Note removal of `#` from the line
 
 ## Firewall
+### Confirm current status
 ```
 sudo ufw status
 ```
-
 - [ ] Confirm status - initial state should be disabled
 
+### Configure 
 ```
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
@@ -64,6 +74,9 @@ sudo ufw enable
 sudo ufw status
 ```
 - [ ] Confirm status, should now be enabled with details that align with configuration
+	- [ ] SSH; port 2200
+	- [ ] HTTP; port 80
+	- [ ] NTP; port 123
 
 
 ## Apache
@@ -228,6 +241,11 @@ source [Virtual Environment Name]/bin/activate
 sudo apt-get install postgresql
 ```
 - [ ] Confirm page works - no errors
+
+- [To Do] Add configuration instructions
+	- Do not allow remote connections
+	- Create new user 'catalog'
+		- Has limited permissions on application database
 
 ### SQLAlchemy
 ```
