@@ -181,21 +181,21 @@ sudo nano /etc/apache2/sites-available/[Application name].conf
 	- Application name
 ```
 &lt;VirtualHost *:80&gt;  
-		ServerName [Server Name]  
-		ServerAdmin [Server Admin]  
-		WSGIScriptAlias / /var/www/[Application name]/[Application name].wsgi  
-		&lt;Directory /var/www/[Application name]/[Application name]/&gt;  
-			Order allow,deny  
-			Allow from all  
-		&lt;/Directory&gt;  
-		Alias /static /var/www/[Application name]/[Application name]/static  
-		&lt;Directory /var/www/[Application name]/[Application name]/static/&gt;  
-			Order allow,deny  
-			Allow from all  
-		&lt;/Directory&gt;  
-		ErrorLog ${APACHE_LOG_DIR}/error.log  
-		LogLevel warn  
-		CustomLog ${APACHE_LOG_DIR}/access.log combined  
+&nbsp;&nbsp;ServerName [Server Name]  
+&nbsp;&nbsp;ServerAdmin [Server Admin]  
+&nbsp;&nbsp;WSGIScriptAlias / /var/www/[Application name]/[Application name].wsgi  
+&nbsp;&nbsp;&lt;Directory /var/www/[Application name]/[Application name]/&gt;  
+&nbsp;&nbsp;&nbsp;Order allow,deny  
+&nbsp;&nbsp;&nbsp;Allow from all  
+&nbsp;&nbsp;&lt;/Directory&gt;  
+&nbsp;&nbsp;Alias /static /var/www/[Application name]/[Application name]/static  
+&nbsp;&nbsp;&lt;Directory /var/www/[Application name]/[Application name]/static/&gt;  
+&nbsp;&nbsp;&nbsp;Order allow,deny  
+&nbsp;&nbsp;&nbsp;Allow from all  
+&nbsp;&nbsp;&lt;/Directory&gt;  
+&nbsp;&nbsp;ErrorLog ${APACHE_LOG_DIR}/error.log  
+&nbsp;&nbsp;LogLevel warn  
+&nbsp;&nbsp;CustomLog ${APACHE_LOG_DIR}/access.log combined  
 &lt;/VirtualHost&gt;  
 ```
 - [ ] Add modified lines of code to file, save and exit
