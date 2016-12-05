@@ -1,17 +1,29 @@
 # AWS Linux Webserver
 
+## Prepwork
+### Create authorized key
+- [ ] Open terminal to local machine and run:
+```
+ssh-keygen [filename]
+```
+- [ ] Open public key file for later step
+```
+sudo nano [path\filename].pub
+```
+- [ ] Leave this terminal open for use later
+
+### Create AWS Instance on Udacity site
+- Go to `https://www.udacity.com/account#!/development_environment`
+- [ ] Click 'Create Development Environment'
+- [ ] Make note of IP address (paste here)
+- [ ] Download `udacity_key.rsa` to `Downloads` folder
+- [ ] Move `udacity_key.rsa` to local machine
+	```
+	mv ~/Downloads/udacity_key.rsa ~/.ssh/
+	chmod 600 ~/.ssh/udacity_key.rsa
+	```
+
 ## Initial Set-Up
-```
-sudo apt-get update
-sudo apt-get dist-upgrade
-sudo apt-get autoremove
-sudo apt-get autoclean
-sudo dpkg-reconfigure tzdata
-```
-- User Prompt
-	- Scroll to the bottom of Continents list
-	- Select `Etc`; in the second list
-	- Select `UTC`
 
 ### Add `grader`
 ```
@@ -28,8 +40,35 @@ touch .ssh/authorized_keys
 chmod 600 .ssh/authorized_keys
 nano ~/.ssh/authorized_keys
 ```
+- [ ] Copy contents of local terminal screen (from Prepwork) into nano screen
+	[ ] Save and Exit
 
-### [To Do] Add instructions for authorized keys
+#### Force key-based Authentication
+- [ ] Open sshd_config for editing: `sudo nano /etc/ssh/sshd_config`
+- [ ] Find `Password Authentication`
+	- [ ] Change 'yes' to 'no' if not already set to 'no.'
+	- [ ] Save and Exit
+- [ ] Restart SSH service with `sudo service ssh restart`
+
+
+#### Provide sudo permissions - back up plan
+If you're this far, the insurance code below is unnecessary and can be skipped. If, however, grader could not `sudo nano` in the steps above, run the code below when logged in as root.
+```
+sudo usermod -aG sudo grader
+```
+
+#### Upgrade packages, clean residual files
+```
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get autoremove
+sudo apt-get autoclean
+sudo dpkg-reconfigure tzdata
+```
+- User Prompt
+	- Scroll to the bottom of Continents list
+	- Select `Etc`; in the second list
+	- Select `UTC`
 
 ### Remove SSH access from root user
 - Only once an additional su user has been created
@@ -41,11 +80,6 @@ nano ~/.ssh/authorized_keys
 		- `/etc/init.d/sshd restart`
 - Reference:
 	- http://www.tecmint.com/disable-or-enable-ssh-root-login-and-limit-ssh-access-in-linux/
-
-### Provide sudo permissions - back up plan
-```
-sudo usermod -a -G sudo grader
-```
 
 
 ## SSH Port change
