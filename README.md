@@ -1,4 +1,4 @@
-# AWS_Linux_Webserver
+# AWS Linux Webserver
 
 ## Initial Set-Up
 - [To Do] Add instructions to remove root remote access
@@ -18,7 +18,7 @@ sudo dpkg-reconfigure tzdata
 sudo adduser grader --disabled-password
 ```
 
-- Answer questions and enter password
+- [ ] Answer questions and enter password
 
 ### Provide permissions to connect externally
 ```
@@ -37,13 +37,13 @@ nano ~/.ssh/authorized_keys
 sudo touch /etc/sudoers.d/grader
 sudo nano /etc/sudoers.d/grader
 ```
-- Paste `grader ALL=(ALL) NOPASSWD:ALL`, Save, Exit
+- [ ] Paste `grader ALL=(ALL) NOPASSWD:ALL`, Save, Exit
 
 ## SSH Port change
 ```
 sudo nano /etc/ssh/sshd_config
 ```
-- Find `#port 22` and change to `port 2200`
+- [ ] Find `#port 22` and change to `port 2200`
 	- Note removal of `#` from the line
 
 ## Firewall
