@@ -94,29 +94,17 @@ sudo nano /etc/apache2/sites-enabled/000-default.conf
 ### Enable
 ```
 sudo a2enmod wsgi
-```
-
-- Add 
-```
-WSGIScriptAlias / /var/www/html/myapp.wsgi
-```
-to end of `<VirtualHost>` block
-
-- Restart Apache
-```
 sudo apache2ctl restart
 ```
+
+### Verification
 - [ ] Confirm page works - no errors
 
-## PostGreSQL - Install
-### Install
-```
-sudo apt-get install postgresql
-```
-- [ ] Confirm page works - no errors
 
 ## Flask
 ### Create Flask App
+#### Create Flask Directory Structure
+- [ ] Create the directories as specified below, substituting your application's name
 ```
 cd /var/www
 sudo mkdir [Application name]
@@ -126,7 +114,7 @@ cd [Application name]
 sudo mkdir static templates
 ```
 
-### Create __init__.py file
+#### Create __init__.py file
 ```
 sudo nano __init__.py
 ```
@@ -170,15 +158,15 @@ sudo pip install Flask
  ```
  - Should show “Running on http://localhost:5000/” or "Running on http://127.0.0.1:5000/"
 
-### Virtual Host
-#### Create Config File
+## Virtual Host
+### Create Config File
 ```
 sudo nano /etc/apache2/sites-available/[Application name].conf
 ```
 - [ ] Modify lines of code below to reflect
-	- Server Name - change to server's IP Address
-	- Server Admin
-	- Application name
+	- [ ] Server Name - change to server's IP Address
+	- [ ] Server Admin
+	- [ ] Application name
 ```
 <VirtualHost *:80>  
 	ServerName [Server Name]  
@@ -201,7 +189,7 @@ sudo nano /etc/apache2/sites-available/[Application name].conf
 - [ ] Add modified lines of code to file, save and exit
 
 
-- [ ] Enable virtual host
+### Enable virtual host
 ```
 sudo a2ensite [Application name]
 ```
@@ -212,7 +200,9 @@ cd /var/www/[Application name]
 sudo nano [Application name].wsgi  
 ```
 
-- [ ] Modify lines below to reflect Application Name
+- [ ] Modify lines below to reflect
+	- [ ] Application Name
+	- [ ] Secret Key
 ```
 #!/usr/bin/python
 import sys
@@ -221,7 +211,7 @@ logging.basicConfig(stream=sys.stderr)
 sys.path.insert(0,"/var/www/[Application name]/")
 
 from [Application name] import app as application
-application.secret_key = 'Add your secret key'
+application.secret_key = '[Secret Key]'
 ```
 - [ ] Copy into nano window, save and exit
 
@@ -232,6 +222,13 @@ sudo service apache2 restart
 
 
 ## Python modules
+### PostGreSQL
+```
+source [Virtual Environment Name]/bin/activate
+sudo apt-get install postgresql
+```
+- [ ] Confirm page works - no errors
+
 ### SQLAlchemy
 ```
 source [Virtual Environment Name]/bin/activate
