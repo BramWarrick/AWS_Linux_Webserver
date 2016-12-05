@@ -175,35 +175,59 @@ sudo pip install Flask
 ```
 sudo nano /etc/apache2/sites-available/[Application name].conf
 ```
-- [ ] Modify lines of code below of reflect
+- [ ] Modify lines of code below to reflect
 	- Server Name - change to server's IP Address
 	- Server Admin
 	- Application name
 ```
-<VirtualHost *:80>
-		ServerName [Server Name]
-		ServerAdmin [Server Admin]
-		WSGIScriptAlias / /var/www/[Application name]/[Application name].wsgi
-		<Directory /var/www/[Application name]/[Application name]/>
-			Order allow,deny
-			Allow from all
-		</Directory>
-		Alias /static /var/www/[Application name]/[Application name]/static
-		<Directory /var/www/[Application name]/[Application name]/static/>
-			Order allow,deny
-			Allow from all
-		</Directory>
-		ErrorLog ${APACHE_LOG_DIR}/error.log
-		LogLevel warn
-		CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
+&lt;VirtualHost *:80&gt;  
+		ServerName [Server Name]  
+		ServerAdmin [Server Admin]  
+		WSGIScriptAlias / /var/www/[Application name]/[Application name].wsgi  
+		&lt;Directory /var/www/[Application name]/[Application name]/&gt;  
+			Order allow,deny  
+			Allow from all  
+		&lt;/Directory&gt;  
+		Alias /static /var/www/[Application name]/[Application name]/static  
+		&lt;Directory /var/www/[Application name]/[Application name]/static/&gt;  
+			Order allow,deny  
+			Allow from all  
+		&lt;/Directory&gt;  
+		ErrorLog ${APACHE_LOG_DIR}/error.log  
+		LogLevel warn  
+		CustomLog ${APACHE_LOG_DIR}/access.log combined  
+&lt;/VirtualHost&gt;  
 ```
 - [ ] Add modified lines of code to file, save and exit
 
 
 - [ ] Enable virtual host
 ```
-sudo a2ensite FlaskApp
+sudo a2ensite [Application name]
+```
+
+### Create .wsgi File
+```
+cd /var/www/[Application name]  
+sudo nano [Application name].wsgi  
+```
+
+- [ ] Modify lines below to reflect Application Name
+```
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/var/www/[Application name]/")
+
+from [Application name] import app as application
+application.secret_key = 'Add your secret key'
+```
+- [ ] Copy into nano window, save and exit
+
+- [ ] Restart Apache
+```
+sudo service apache2 restart
 ```
 
 
