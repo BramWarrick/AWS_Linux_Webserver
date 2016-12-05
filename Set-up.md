@@ -165,7 +165,7 @@ sudo pip install Flask
 ```
 
 - [ ] Confirm install
- - ```
+ ```
  sudo python __init__.py
  ```
  - Should show “Running on http://localhost:5000/” or "Running on http://127.0.0.1:5000/"
@@ -180,23 +180,23 @@ sudo nano /etc/apache2/sites-available/[Application name].conf
 	- Server Admin
 	- Application name
 ```
-&lt;VirtualHost *:80&gt;  
-&nbsp;&nbsp;ServerName [Server Name]  
-&nbsp;&nbsp;ServerAdmin [Server Admin]  
-&nbsp;&nbsp;WSGIScriptAlias / /var/www/[Application name]/[Application name].wsgi  
-&nbsp;&nbsp;&lt;Directory /var/www/[Application name]/[Application name]/&gt;  
-&nbsp;&nbsp;&nbsp;Order allow,deny  
-&nbsp;&nbsp;&nbsp;Allow from all  
-&nbsp;&nbsp;&lt;/Directory&gt;  
-&nbsp;&nbsp;Alias /static /var/www/[Application name]/[Application name]/static  
-&nbsp;&nbsp;&lt;Directory /var/www/[Application name]/[Application name]/static/&gt;  
-&nbsp;&nbsp;&nbsp;Order allow,deny  
-&nbsp;&nbsp;&nbsp;Allow from all  
-&nbsp;&nbsp;&lt;/Directory&gt;  
-&nbsp;&nbsp;ErrorLog ${APACHE_LOG_DIR}/error.log  
-&nbsp;&nbsp;LogLevel warn  
-&nbsp;&nbsp;CustomLog ${APACHE_LOG_DIR}/access.log combined  
-&lt;/VirtualHost&gt;  
+<VirtualHost *:80>  
+	ServerName [Server Name]  
+	ServerAdmin [Server Admin]  
+	WSGIScriptAlias / /var/www/[Application name]/[Application name].wsgi  
+	<Directory /var/www/[Application name]/[Application name]/>  
+		Order allow,deny  
+		Allow from all  
+	</Directory>  
+	Alias /static /var/www/[Application name]/[Application name]/static  
+	<Directory /var/www/[Application name]/[Application name]/static/>  
+		Order allow,deny  
+		Allow from all  
+	</Directory>  
+	ErrorLog ${APACHE_LOG_DIR}/error.log  
+	LogLevel warn  
+	CustomLog ${APACHE_LOG_DIR}/access.log combined  
+</VirtualHost>  
 ```
 - [ ] Add modified lines of code to file, save and exit
 
