@@ -50,14 +50,38 @@ nano ~/.ssh/authorized_keys
 	- [ ] Save and Exit
 - [ ] Restart SSH service with `sudo service ssh restart`
 
-
 #### Provide sudo permissions - back up plan
 If you're this far, the insurance code below is unnecessary and can be skipped. If, however, grader could not `sudo nano` in the steps above, run the code below when logged in as root.
 ```
 sudo usermod -aG sudo grader
 ```
 
-#### Upgrade packages, clean residual files
+#### Ensure grader has external access
+- [ ] Open new terminal and log in as `grader`
+	```
+	ssh -i ~/.ssh/authorized_key grader@[IP Address]
+	```
+- [ ] If able to sign in, reconfirm sudo privileges
+- [ ] **If either of these conditions are not met you cannot advance**
+
+### Remove SSH access from root user
+- [ ] `sudo nano /etc/ssh/sshd_config`
+- [ ] Find `#PermitRootLogin no`
+	- [ ] Remove `#`
+	- [ ] Save and Exit
+- [ ] Restart SSH daemon service
+	- `/etc/init.d/sshd restart`
+- Attempt log in as root
+	- [ ] Open new terminal and use code below, substituting the IP Address.
+		```
+		ssh -i ~/.ssh/udacity_key.rsa root@[IP Address]
+		```
+	- [ ] Attempt should fail
+- [ ] **If you're able to sign in, do not advance - fix this.**
+- Reference:
+	- http://www.tecmint.com/disable-or-enable-ssh-root-login-and-limit-ssh-access-in-linux/
+
+### Upgrade packages, clean residual files
 ```
 sudo apt-get update
 sudo apt-get dist-upgrade
@@ -69,17 +93,6 @@ sudo dpkg-reconfigure tzdata
 	- Scroll to the bottom of Continents list
 	- Select `Etc`; in the second list
 	- Select `UTC`
-
-### Remove SSH access from root user
-- Only once an additional su user has been created
-	- [ ] sudo nano /etc/ssh/sshd_config
-	- [ ] Find `#PermitRootLogin no`
-		- [ ] Remove `#`
-		- [ ] Save and Exit
-	- [ ] Restart SSH daemon service
-		- `/etc/init.d/sshd restart`
-- Reference:
-	- http://www.tecmint.com/disable-or-enable-ssh-root-login-and-limit-ssh-access-in-linux/
 
 
 ## SSH Port change
