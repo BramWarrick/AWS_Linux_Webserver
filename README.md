@@ -115,19 +115,110 @@ sudo apt-get install postgresql
 ```
 - [ ] Confirm page works - no errors
 
-## Python modules
-### SQLAlchemy
+## Flask
+### Create Flask App
 ```
-sudo pip install SQLAlchemy
+cd /var/www
+sudo mkdir [Application name]
+cd [Application name]
+sudo mkdir [Application name]
+cd [Application name]
+sudo mkdir static templates
 ```
 
-### Flask
+### Create __init__.py file
 ```
+sudo nano __init__.py
+```
+- [ ] Add code below to file, save and exit
+```
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def hello():
+    return "Hello, World!!!"
+if __name__ == "__main__":
+    app.run()
+```
+
+### Install Flask
+- [ ] Ensure pip is installed locally
+```
+sudo apt-get install python-pip
+
+```
+
+- [ ] Ensure virtualenv is installed locally
+```
+sudo pip install virtualenv
+```
+
+- [ ] Create virtual environment
+```
+sudo virtualenv [Virtual Environment Name]
+```
+
+- [ ] Install Flask on virtual environment
+```
+source [Virtual Environment Name]/bin/activate
 sudo pip install Flask
 ```
 
+- [ ] Confirm install
+ - ```
+ sudo python __init__.py
+ ```
+ - Should show “Running on http://localhost:5000/” or "Running on http://127.0.0.1:5000/"
+
+### Virtual Host
+#### Create Config File
+```
+sudo nano /etc/apache2/sites-available/[Application name].conf
+```
+- [ ] Modify lines of code below of reflect
+	- Server Name - change to server's IP Address
+	- Server Admin
+	- Application name
+```
+<VirtualHost *:80>
+		ServerName [Server Name]
+		ServerAdmin [Server Admin]
+		WSGIScriptAlias / /var/www/[Application name]/[Application name].wsgi
+		<Directory /var/www/[Application name]/[Application name]/>
+			Order allow,deny
+			Allow from all
+		</Directory>
+		Alias /static /var/www/[Application name]/[Application name]/static
+		<Directory /var/www/[Application name]/[Application name]/static/>
+			Order allow,deny
+			Allow from all
+		</Directory>
+		ErrorLog ${APACHE_LOG_DIR}/error.log
+		LogLevel warn
+		CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+- [ ] Add modified lines of code to file, save and exit
+
+
+- [ ] Enable virtual host
+```
+sudo a2ensite FlaskApp
+```
+
+
+## Python modules
+### SQLAlchemy
+```
+source [Virtual Environment Name]/bin/activate
+sudo pip install SQLAlchemy
+```
+### Flask
+- Installed earlier in process
+
 ### oauth2client (google)
 ```
+source [Virtual Environment Name]/bin/activate
 sudo apt-get update
 sudo apt-get install python-oauth2client
 ```
