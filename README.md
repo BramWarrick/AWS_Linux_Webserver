@@ -65,10 +65,9 @@ sudo ufw status
 ```
 - [ ] Confirm status, should now be enabled with details that align with configuration
 
-## LAMP
 
-### Apache
-#### Install
+## Apache
+### Install
 ```
 sudo apt-get update
 sudo apt-get install apache2
@@ -80,76 +79,21 @@ sudo apt-get install apache2
 	ifconfig eth0 | grep inet | awk '{ print $2 }'
 	```
 
-### MySQL
-
-#### Install and Activate
-```
-sudo apt-get install mysql-server libapache2-mod-auth-mysql php5-mysql
-sudo mysql_install_db
-
-```
-
-#### Set-Up
-```
-sudo /usr/bin/mysql_secure_installation
-```
-- Expected prompts with desired answers:
-```
-Remove anonymous users? [Y/n] y
-Disallow root login remotely? [Y/n] y
-Remove test database and access to it? [Y/n] y
-Reload privilege tables now? [Y/n] y
-```
-
-### PHP
-#### Install
-```
-sudo apt-get install php5 libapache2-mod-php5 php5-mcrypt
-```
-
-#### Configuration
-```
-sudo nano /etc/apache2/mods-enabled/dir.conf
-```
-- [ ] Add `index.php` to beginning of index files list.
-
-#### PHP Module installation
-```
-sudo apt-get install php5-mysql
-```
-
-
-### Post install verification
-```
-sudo nano /var/www/info.php
-```
-- [ ] Paste in
-```
-<?php
-phpinfo();
-?>
-```
-- [ ] Save and Exit
-
-- [ ] Restart Apache using
-```
-sudo service apache2 restart
-```
-
-- [ ] Navigate to `http://[your IP here]/info.php`
-	- If everything works you should see the default PHP page
-	- Otherwise, review install instructions and begin debugging
-
 
 ## mod_wsgi - Install and Configure
 ### Install 
 ```
-sudo apt-get install libapache2-mod-wsgi
+sudo apt-get install libapache2-mod-wsgi python-dev
 ```
 
 ### Configure
 ```
 sudo nano /etc/apache2/sites-enabled/000-default.conf
+```
+
+### Enable
+```
+sudo a2enmod wsgi
 ```
 
 - Add 
