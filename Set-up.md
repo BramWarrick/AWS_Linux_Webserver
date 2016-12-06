@@ -183,6 +183,7 @@ sudo apache2ctl restart
 
 ## Flask
 ### Create Flask App
+Reference: https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps  
 #### Create Flask Directory Structure
 - [ ] Create the directories as specified below, substituting your application's name
 ```
