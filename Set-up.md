@@ -111,14 +111,15 @@ sudo dpkg-reconfigure tzdata
 sudo nano /etc/ssh/sshd_config
 ```
 - [ ] Find `#port 22` and change to `port 2200`
-	- [ ] Note removal of `#` from the line
+	- [ ] ensure there is no `#` on the line
 
 ## Firewall
 ### Confirm current status
 ```
 sudo ufw status
 ```
-- [ ] Confirm status - initial state should be disabled
+- [ ] Confirm status - initial state should show `Status: inactive`
+
 
 ### Configure 
 ```
@@ -135,7 +136,19 @@ sudo ufw status
 	- [ ] SSH; port 2200
 	- [ ] HTTP; port 80
 	- [ ] NTP; port 123
-
+	- Example below:
+	```
+		To                         Action      From
+	--                         ------      ----
+	22                         ALLOW       Anywhere
+	2200/tcp                   ALLOW       Anywhere
+	123                        ALLOW       Anywhere
+	80/tcp                     ALLOW       Anywhere
+	22 (v6)                    ALLOW       Anywhere (v6)
+	2200/tcp (v6)              ALLOW       Anywhere (v6)
+	123 (v6)                   ALLOW       Anywhere (v6)
+	80/tcp (v6)                ALLOW       Anywhere (v6)
+	```
 
 ## Apache
 ### Install
