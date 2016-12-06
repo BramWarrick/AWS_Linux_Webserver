@@ -158,11 +158,7 @@ sudo apt-get install apache2
 ```
 
 - [ ] Confirm page works - default apache page
-	- Navigate to servers IP address, if not sure use command below
-	```
-	ifconfig eth0 | grep inet | awk '{ print $2 }'
-	```
-
+	- Navigate to servers IP address in a browser
 
 ## mod_wsgi - Install and Configure
 ### Install 
