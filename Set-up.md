@@ -1,16 +1,18 @@
 # AWS Linux Webserver
 
-## Prepwork
+## Prep-Work
 ### Create authorized key
 - [ ] Open terminal to local machine and run:
 ```
-ssh-keygen [filename]
+ssh-keygen -f ~/.ssh/authorized_keys
 ```
+- [ ] Enter and make note of passphrase  
+  ________________________________________
 - [ ] Open public key file for later step
 ```
-sudo nano [path\filename].pub
+vi ~/.ssh/authorized_keys.pub
 ```
-- [ ] Leave this terminal open for use later
+- [ ] *Leave this terminal open for use later*
 
 ### Create AWS Instance on Udacity site
 - Go to `https://www.udacity.com/account#!/development_environment`
@@ -21,15 +23,24 @@ sudo nano [path\filename].pub
 	```
 	mv ~/Downloads/udacity_key.rsa ~/.ssh/
 	chmod 600 ~/.ssh/udacity_key.rsa
+	ssh -i ~/.ssh/udacity_key.rsa root@35.164.142.195
 	```
 
 ## Initial Set-Up
 
+- [ ] Open new terminal window
+- [ ] Connect using the connection command provided by Udacity
+IP Address: ________________________________
+
 ### Add `grader`
+
 ```
-sudo adduser grader sudo --disabled-password
+sudo adduser grader
 ```
 - [ ] Answer questions and enter password
+```
+usermod -aG sudo grader
+```
 
 #### Provide permissions to connect externally
 ```
@@ -50,16 +61,11 @@ nano ~/.ssh/authorized_keys
 	- [ ] Save and Exit
 - [ ] Restart SSH service with `sudo service ssh restart`
 
-#### Provide sudo permissions - back up plan
-If you're this far, the insurance code below is unnecessary and can be skipped. If, however, grader could not `sudo nano` in the steps above, run the code below when logged in as root.
-```
-sudo usermod -aG sudo grader
-```
 
 #### Ensure grader has external access
 - [ ] Open new terminal and log in as `grader`
 	```
-	ssh -i ~/.ssh/authorized_key grader@[IP Address]
+	ssh -i ~/.ssh/grader_key grader@35.164.142.195
 	```
 - [ ] If able to sign in, reconfirm sudo privileges
 - [ ] **If either of these conditions are not met you cannot advance**
@@ -69,12 +75,14 @@ sudo usermod -aG sudo grader
 - [ ] Find `#PermitRootLogin no`
 	- [ ] Remove `#`
 	- [ ] Save and Exit
-- [ ] Restart SSH daemon service
-	- `/etc/init.d/sshd restart`
+- [ ] Remove root's authorized keys
+	```
+	sudo rm -f ~/.ssh/authorized_keys
+	```
 - Attempt log in as root
 	- [ ] Open new terminal and use code below, substituting the IP Address.
 		```
-		ssh -i ~/.ssh/udacity_key.rsa root@[IP Address]
+		ssh -i ~/.ssh/udacity_key.rsa root@35.164.142.195
 		```
 	- [ ] Attempt should fail
 - [ ] **If you're able to sign in, do not advance - fix this.**
@@ -285,14 +293,19 @@ sudo service apache2 restart
 ### PostGreSQL
 ```
 source [Virtual Environment Name]/bin/activate
-sudo apt-get install postgresql
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
 ```
 - [ ] Confirm page works - no errors
 
 - [To Do] Add configuration instructions
 	- Do not allow remote connections
+	```
+	sudo nano /etc/postgresql/9.1/main/pg_hba.conf
+	```
 	- Create new user 'catalog'
 		- Has limited permissions on application database
+- Reference: https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps
 
 ### SQLAlchemy
 ```
