@@ -31,6 +31,7 @@ vi ~/.ssh/authorized_keys.pub
 - [ ] Open new terminal window
 - [ ] Connect using the connection command provided by Udacity
 IP Address: ________________________________
+- [ ] Run `echo "127.0.0.1 $(hostname)" >> /etc/hosts` to clean up legacy AWS bug
 
 ### Add `grader`
 
@@ -224,7 +225,7 @@ sudo pip install virtualenv
 
 - [ ] Create virtual environment
 ```
-sudo virtualenv [Virtual Environment Name]
+sudo virtualenv item-catalog-venv
 ```
 
 - [ ] Install Flask on virtual environment
@@ -238,27 +239,28 @@ sudo pip install Flask
  sudo python __init__.py
  ```
  - Should show “Running on http://localhost:5000/” or "Running on http://127.0.0.1:5000/"
+ - ctrl+C to exit afterward
 
 ## Virtual Host
 ### Create Config File
 ```
-sudo nano /etc/apache2/sites-available/[Application name].conf
+sudo nano /etc/apache2/sites-available/item-catalog.conf
 ```
 - [ ] Modify lines of code below to reflect
 	- [ ] Server Name - change to server's IP Address
 	- [ ] Server Admin
-	- [ ] Application name
+	- [ ] Application name (item-catalog)
 ```
 <VirtualHost *:80>  
-	ServerName [Server Name]  
-	ServerAdmin [Server Admin]  
-	WSGIScriptAlias / /var/www/[Application name]/[Application name].wsgi  
-	<Directory /var/www/[Application name]/[Application name]/>  
+	ServerName 127.0.0.1
+	ServerAdmin grader@localhost 
+	WSGIScriptAlias / /var/www/item-catalog/item-catalog.wsgi  
+	<Directory /var/www/item-catalog/item-catalog/> 
 		Order allow,deny  
 		Allow from all  
 	</Directory>  
-	Alias /static /var/www/[Application name]/[Application name]/static  
-	<Directory /var/www/[Application name]/[Application name]/static/>  
+	Alias /static /var/www/item-catalog/item-catalog/static  
+	<Directory /var/www/item-catalog/item-catalog/static/>  
 		Order allow,deny  
 		Allow from all  
 	</Directory>  
@@ -272,26 +274,24 @@ sudo nano /etc/apache2/sites-available/[Application name].conf
 
 ### Enable virtual host
 ```
-sudo a2ensite [Application name]
+sudo a2ensite item-catalog
 ```
 
 ### Create .wsgi File
 ```
-cd /var/www/[Application name]  
-sudo nano [Application name].wsgi  
+sudo nano /var/www/item-catalog/item-catalog.wsgi  
 ```
 
 - [ ] Modify lines below to reflect
-	- [ ] Application Name
 	- [ ] Secret Key
 ```
 #!/usr/bin/python
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0,"/var/www/[Application name]/")
+sys.path.insert(0,"/var/www/item-catalog/")
 
-from [Application name] import app as application
+from item-catalog import app as application
 application.secret_key = '[Secret Key]'
 ```
 - [ ] Copy into nano window, save and exit
@@ -305,7 +305,7 @@ sudo service apache2 restart
 ## Python modules
 ### PostGreSQL
 ```
-source [Virtual Environment Name]/bin/activate
+source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get update
 sudo apt-get install postgresql postgresql-contrib
 ```
@@ -322,7 +322,7 @@ sudo apt-get install postgresql postgresql-contrib
 
 ### SQLAlchemy
 ```
-source [Virtual Environment Name]/bin/activate
+source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
 sudo pip install SQLAlchemy
 ```
 ### Flask
@@ -330,7 +330,7 @@ sudo pip install SQLAlchemy
 
 ### oauth2client (google)
 ```
-source [Virtual Environment Name]/bin/activate
+source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get update
 sudo apt-get install python-oauth2client
 ```
