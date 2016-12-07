@@ -1,3 +1,10 @@
+Find/Replace references:
+- IP: 35.160.63.155
+- Filename: item-catalog
+- Virtual Environment Name: item-catalog-venv
+
+
+
 # AWS Linux Webserver
 
 ## Prep-Work
@@ -23,7 +30,7 @@ vi ~/.ssh/authorized_keys.pub
 	```
 	mv ~/Downloads/udacity_key.rsa ~/.ssh/
 	chmod 600 ~/.ssh/udacity_key.rsa
-	ssh -i ~/.ssh/udacity_key.rsa root@35.164.142.195
+	ssh -i ~/.ssh/udacity_key.rsa root@35.160.63.155
 	```
 
 ## Initial Set-Up
@@ -31,7 +38,7 @@ vi ~/.ssh/authorized_keys.pub
 - [ ] Open new terminal window
 - [ ] Connect using the connection command provided by Udacity
 IP Address: ________________________________
-- [ ] Run `echo "127.0.0.1 $(hostname)" >> /etc/hosts` to clean up legacy AWS bug
+- [ ] Run `echo "127.0.0.1 $(hostname)"` >> /etc/hosts` to clean up legacy AWS bug
 
 ### Add `grader`
 
@@ -55,47 +62,44 @@ nano ~/.ssh/authorized_keys
 - [ ] Copy contents of local terminal screen (from Prepwork) into nano screen
 	[ ] Save and Exit
 
-#### Force key-based Authentication
-- [ ] Open sshd_config for editing: `sudo nano /etc/ssh/sshd_config`
-- [ ] Find `Password Authentication`
-	- [ ] Change 'yes' to 'no' if not already set to 'no.'
-	- [ ] Save and Exit
-- [ ] Restart SSH service with `sudo service ssh restart`
-
 
 #### Ensure grader has external access
 - [ ] Open new terminal and log in as `grader`
 	```
-	ssh -i ~/.ssh/grader_key grader@35.164.142.195
+	ssh -i ~/.ssh/authorized_keys grader@35.160.63.155
 	```
 - [ ] If able to sign in, reconfirm sudo privileges
 - [ ] **If either of these conditions are not met you cannot advance**
 
-### Remove SSH access from root user
-- [ ] `sudo nano /etc/ssh/sshd_config`
-- [ ] Find `#PermitRootLogin no`
-	- [ ] Remove `#`
-	- [ ] Save and Exit
+
+#### Force key-based Authentication/Remove root remote access
+- [ ] Open sshd_config for editing: `sudo nano /etc/ssh/sshd_config`
+- [ ] Find `Password Authentication`
+	- [ ] Change 'yes' to 'no' if not already set to 'no.'
+- [ ] Find `#PermitRootLogin`
+	- [ ] Change `without-password` to `no`
+- [ ] Save and Exit
+- [ ] Restart SSH service with `sudo service ssh restart`
 - [ ] Remove root's authorized keys
 	```
+	sudo su - root
 	sudo rm -f ~/.ssh/authorized_keys
 	```
 - Attempt log in as root
 	- [ ] Open new terminal and use code below, substituting the IP Address.
 		```
-		ssh -i ~/.ssh/udacity_key.rsa root@35.164.142.195
+		ssh -i ~/.ssh/udacity_key.rsa root@35.160.63.155
 		```
 	- [ ] Attempt should fail
-- [ ] **If you're able to sign in, do not advance - fix this.**
+- [ ] **If you ARE able to sign in, do not advance - fix this.**
 - Reference:
 	- http://www.tecmint.com/disable-or-enable-ssh-root-login-and-limit-ssh-access-in-linux/
 
 ### Upgrade packages, clean residual files
 ```
 sudo apt-get update
-sudo apt-get dist-upgrade
+sudo apt-get upgrade
 sudo apt-get autoremove
-sudo apt-get autoclean
 ```
 
 ### Change local time
@@ -103,7 +107,7 @@ sudo dpkg-reconfigure tzdata
 ```
 - User Prompt
 	- Scroll to the bottom of Continents list
-	- Select `Etc`; in the second list
+	- Select `None of the above`; in the second list
 	- Select `UTC`
 
 
@@ -113,6 +117,7 @@ sudo nano /etc/ssh/sshd_config
 ```
 - [ ] Find `#port 22` and change to `port 2200`
 	- [ ] ensure there is no `#` on the line
+	- [ ] Save and Close
 
 ## Firewall
 ### Confirm current status
@@ -150,6 +155,10 @@ sudo ufw status
 	123 (v6)                   ALLOW       Anywhere (v6)
 	80/tcp (v6)                ALLOW       Anywhere (v6)
 	```
+- [ ] Confirm successful log-in
+	```
+	ssh -i ~/.ssh/authorized_keys grader@35.160.63.155
+	```
 
 ## Apache
 ### Install
@@ -159,17 +168,13 @@ sudo apt-get install apache2
 ```
 
 - [ ] Confirm page works - default apache page
-	- Navigate to servers IP address in a browser
+	- Navigate to server's IP address in a browser
+	```35.160.63.155```
 
 ## mod_wsgi - Install and Configure
 ### Install 
 ```
 sudo apt-get install libapache2-mod-wsgi python-dev
-```
-
-### Configure
-```
-sudo nano /etc/apache2/sites-enabled/000-default.conf
 ```
 
 ### Enable
@@ -180,6 +185,27 @@ sudo apache2ctl restart
 
 ### Verification
 - [ ] Confirm page works - no errors
+	- Navigate to server's IP address in a browser
+	```35.160.63.155```
+
+
+## Git - Install
+```
+sudo apt-get install git
+```
+
+## Pip - install
+- [ ] Ensure pip is installed locally
+```
+sudo apt-get install python-pip
+
+```
+
+## Virtualenv - install
+- [ ] Ensure virtualenv is installed locally
+```
+sudo pip install virtualenv
+```
 
 
 ## Flask
@@ -189,16 +215,15 @@ Reference: https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flas
 - [ ] Create the directories as specified below, substituting your application's name
 ```
 cd /var/www
-sudo mkdir [Application name]
-cd [Application name]
-sudo mkdir [Application name]
-cd [Application name]
-sudo mkdir static templates
+sudo mkdir item-catalog
+cd item-catalog
+git clone https://github.com/BramWarrick/Item_Catalog.git
+sudo mv Item_Catalog item-catalog
 ```
 
 #### Create __init__.py file
 ```
-sudo nano __init__.py
+sudo nano /var/www/item-catalog/item-catalog/__init__.py
 ```
 - [ ] Add code below to file, save and exit
 ```
@@ -212,47 +237,35 @@ if __name__ == "__main__":
 ```
 
 ### Install Flask
-- [ ] Ensure pip is installed locally
-```
-sudo apt-get install python-pip
-
-```
-
-- [ ] Ensure virtualenv is installed locally
-```
-sudo pip install virtualenv
-```
-
 - [ ] Create virtual environment
 ```
+cd /var/www/item-catalog/item-catalog
 sudo virtualenv item-catalog-venv
 ```
 
 - [ ] Install Flask on virtual environment
 ```
-source [Virtual Environment Name]/bin/activate
+source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
 sudo pip install Flask
 ```
 
 - [ ] Confirm install
  ```
- sudo python __init__.py
+ sudo python /var/www/item-catalog/item-catalog/__init__.py
  ```
  - Should show “Running on http://localhost:5000/” or "Running on http://127.0.0.1:5000/"
- - ctrl+C to exit afterward
+ - Ctrl+C to exit afterward
+- To leave virtual environment, enter `deactivate`.
 
 ## Virtual Host
 ### Create Config File
 ```
 sudo nano /etc/apache2/sites-available/item-catalog.conf
 ```
-- [ ] Modify lines of code below to reflect
-	- [ ] Server Name - change to server's IP Address
-	- [ ] Server Admin
-	- [ ] Application name (item-catalog)
+- [ ] Add these lines of code to file
 ```
 <VirtualHost *:80>  
-	ServerName 127.0.0.1
+	ServerName localhost
 	ServerAdmin grader@localhost 
 	WSGIScriptAlias / /var/www/item-catalog/item-catalog.wsgi  
 	<Directory /var/www/item-catalog/item-catalog/> 
@@ -266,11 +279,10 @@ sudo nano /etc/apache2/sites-available/item-catalog.conf
 	</Directory>  
 	ErrorLog ${APACHE_LOG_DIR}/error.log  
 	LogLevel warn  
-	CustomLog ${APACHE_LOG_DIR}/access.log combined  
+	CustomLog ${APACHE_LOG_DIR}/access.log combined 
 </VirtualHost>  
 ```
-- [ ] Add modified lines of code to file, save and exit
-
+- [ ] Save and Exit
 
 ### Enable virtual host
 ```
@@ -281,7 +293,6 @@ sudo a2ensite item-catalog
 ```
 sudo nano /var/www/item-catalog/item-catalog.wsgi  
 ```
-
 - [ ] Modify lines below to reflect
 	- [ ] Secret Key
 ```
@@ -296,11 +307,23 @@ application.secret_key = '[Secret Key]'
 ```
 - [ ] Copy into nano window, save and exit
 
-- [ ] Restart Apache
+## Apache restart
 ```
 sudo service apache2 restart
 ```
 
+## Clone Project to server
+### Install git
+```
+sudo apt-get install git-all
+```
+
+- [ ] Clone repository
+```
+cd /var/www/item-catalog/
+git clone https://github.com/BramWarrick/Item_Catalog.git
+mv Item-Catalog/* item-catalog
+```
 
 ## Python modules
 ### PostGreSQL
