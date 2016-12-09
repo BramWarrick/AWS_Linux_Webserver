@@ -264,23 +264,23 @@ sudo nano /etc/apache2/sites-available/item-catalog.conf
 ```
 - [ ] Add these lines of code to file
 ```
-<VirtualHost *:80>  
+<VirtualHost *:80>
 	ServerName localhost
-	ServerAdmin grader@localhost 
-	WSGIScriptAlias / /var/www/item-catalog/item-catalog.wsgi  
-	<Directory /var/www/item-catalog/item-catalog/> 
-		Order allow,deny  
-		Allow from all  
-	</Directory>  
-	Alias /static /var/www/item-catalog/item-catalog/static  
-	<Directory /var/www/item-catalog/item-catalog/static/>  
-		Order allow,deny  
-		Allow from all  
-	</Directory>  
-	ErrorLog ${APACHE_LOG_DIR}/error.log  
-	LogLevel warn  
-	CustomLog ${APACHE_LOG_DIR}/access.log combined 
-</VirtualHost>  
+	ServerAdmin grader@localhost
+	WSGIScriptAlias / /var/www/item-catalog/item-catalog.wsgi
+	<Directory /var/www/item-catalog/item-catalog/>
+		Order allow,deny
+		Allow from all
+	</Directory>
+	Alias /static /var/www/item-catalog/item-catalog/static
+	<Directory /var/www/item-catalog/item-catalog/static/>
+		Order allow,deny
+		Allow from all
+	</Directory>
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	LogLevel warn
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 ```
 - [ ] Save and Exit
 
@@ -296,6 +296,9 @@ sudo nano /var/www/item-catalog/item-catalog.wsgi
 - [ ] Modify lines below to reflect
 	- [ ] Secret Key
 ```
+activate_this = '/var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate_this.py'
+execfile(activate_this, dict(__file__=activate_this))
+
 #!/usr/bin/python
 import sys
 import logging
@@ -310,19 +313,6 @@ application.secret_key = '[Secret Key]'
 ## Apache restart
 ```
 sudo service apache2 restart
-```
-
-## Clone Project to server
-### Install git
-```
-sudo apt-get install git-all
-```
-
-- [ ] Clone repository
-```
-cd /var/www/item-catalog/
-git clone https://github.com/BramWarrick/Item_Catalog.git
-mv Item-Catalog/* item-catalog
 ```
 
 ## Python modules
