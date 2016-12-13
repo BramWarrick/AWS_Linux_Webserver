@@ -202,7 +202,6 @@ sudo apt-get -y install git
 - [ ] Ensure pip is installed locally
 ```
 sudo apt-get -y install python-pip
-
 ```
 
 ## Virtualenv - install
@@ -212,26 +211,27 @@ yes | sudo pip install virtualenv
 ```
 
 
-## Flask
+## File Structure
 ### Create Flask App
 Reference: https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps  
+Reference: http://www.datasciencebytes.com/bytes/2015/02/24/running-a-flask-app-on-aws-ec2/  
 #### Create Flask Directory Structure
 - [ ] Create the directories as specified below, substituting your application's name
 ```
-cd /var/www
+cd /var/www/html
 sudo mkdir item-catalog
 cd item-catalog
 sudo git clone https://github.com/BramWarrick/Item_Catalog.git
 sudo mv Item_Catalog item-catalog
 ```
 
-### Install Flask
-- [ ] Create virtual environment
+### Create virtual environment
 ```
-cd /var/www/item-catalog/item-catalog
+cd /var/www/html/item-catalog/item-catalog
 sudo virtualenv item-catalog-venv
 ```
 
+## Install Flask
 - [ ] Install Flask on virtual environment
 ```
 source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
@@ -240,13 +240,13 @@ deactivate
 ```
 
 ## Test Flask Install
-### Create flaskapp.py file
+### Create `flaskapp.py` file
 ```
 cd /var/www/html/item-catalog
 sudo nano flaskapp.py
 ```
 
-- [ ] Paste in:
+- [ ] Contents:
 ```
 activate_this = '/var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate_this
 execfile(activate_this, dict(__file__=activate_this.py))
@@ -263,7 +263,7 @@ from flaskapp import app as application
 ```
 sudo nano flaskapp.wsgi
 ```
-- [ ] Paste in:
+- [ ] Contents:
 ```
 from flask import Flask
 app = Flask(__name__)
@@ -281,8 +281,7 @@ if __name__ == '__main__':
 ```
 sudo nano /etc/apache2/sites-enabled/000-default.conf
 ```
-
-- [ ] Modify the code below:
+- [ ] Paste the code (below) into the section immediately following the `DocumentRoot` line
 ```
 		#WSGIDaemonProcess flaskapp threads=5
         WSGIScriptAlias / /var/www/html/item-catalog/flaskapp.wsgi
@@ -294,7 +293,6 @@ sudo nano /etc/apache2/sites-enabled/000-default.conf
                 Allow from all
         </Directory>
 ```
-- [ ] Paste the modified code into the section immediately following `DocumentRoot`
 - [ ] Save and Close
 - [ ] `sudo apache2ctl restart`
 
@@ -303,61 +301,30 @@ Navigate to `35.165.146.88`
 
 ~~~~~
 
-### Create .wsgi File
-```
-sudo nano /var/www/item-catalog/item-catalog.wsgi  
-```
-- [ ] Modify lines below to reflect
-	- [ ] Secret Key
-```
-activate_this = '/var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate_this.py'
-execfile(activate_this, dict(__file__=activate_this))
-
-#!/usr/bin/python
-import sys
-import logging
-logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0,"/var/www/item-catalog/")
-
-from item-catalog import app as application
-application.secret_key = '[Secret Key]'
-```
-- [ ] Copy into nano window, save and exit
-
-## Apache restart
-```
-sudo service apache2 restart
-```
-
 ## Python modules
-### PostGreSQL
+### Single script
 ```
-source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get update
-sudo apt-get install postgresql postgresql-contrib
+yes | sudo pip install SQLAlchemy
+sudo apt-get -y install python-oauth2client
+desactivate
 ```
-- [ ] Confirm page works - no errors
 
-- [To Do] Add configuration instructions
-	- Do not allow remote connections
-	```
-	sudo nano /etc/postgresql/9.1/main/pg_hba.conf
-	```
-	- Create new user 'catalog'
-		- Has limited permissions on application database
-- Reference: https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps
-
-### SQLAlchemy
+### By Library
+#### SQLAlchemy
 ```
-source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
 sudo pip install SQLAlchemy
 ```
-### Flask
-- Installed earlier in process
 
-### oauth2client (google)
+#### oauth2client (google)
 ```
-source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get update
 sudo apt-get install python-oauth2client
 ```
+
+## Secure db
+	- Create new user 'catalog'
+		- Has limited permissions on application database
