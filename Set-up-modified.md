@@ -72,7 +72,10 @@ nano ~/.ssh/authorized_keys
 
 
 #### Force key-based Authentication/Remove root remote access
-- [ ] Open sshd_config for editing: `sudo nano /etc/ssh/sshd_config`
+- [ ] Open sshd_config for editing: 
+	```
+	sudo nano /etc/ssh/sshd_config
+	```
 	- [ ] Find `#PermitRootLogin`
 		- [ ] Change `without-password` to `no`
 	- [ ] Find `PasswordAuthentication`
@@ -93,7 +96,7 @@ nano ~/.ssh/authorized_keys
 - [ ] **If you ARE able to sign in, do not advance - fix this.**
 - Reference:
 	- http://www.tecmint.com/disable-or-enable-ssh-root-login-and-limit-ssh-access-in-linux/
-- [ ] Sign in using grader user
+- [ ] Sign in using `grader` user
 	```
 	ssh -i ~/.ssh/authorized_keys grader@35.165.146.88
 	```
@@ -107,6 +110,7 @@ sudo apt-get autoremove
 ```
 
 ### Change local time
+```
 sudo dpkg-reconfigure tzdata
 ```
 - User Prompt
@@ -164,55 +168,153 @@ sudo ufw status
 	ssh -i ~/.ssh/authorized_keys grader@35.165.146.88
 	```
 
-## Apache
-### Install
+## Script (continuous) for subsequent steps packages
+### Install packages, project, initial wsgi config
 ```
 sudo apt-get update
 sudo apt-get -y install apache2
+sudo apt-get -y install libapache2-mod-wsgi python-dev
+sudo a2enmod wsgi
+sudo apache2ctl restart
+sudo apt-get -y install git
+sudo apt-get -y install python-pip
+yes | sudo pip install virtualenv
+sudo mkdir -p /var/apps/item-catalog/staged
+sudo mkdir -p /var/apps/item-catalog/version/0001
+sudo mkdir -p /var/apps/item-catalog/recent
+ln -s /var/apps/item-catalog/version/0001 /var/apps/item-catalog/live
+ln -s /var/apps/item-catalog/live /var/www/html/item-catalog
+sudo virtualenv /var/www/html/item-catalog/item-catalog-venv
+sudo git clone https://github.com/BramWarrick/Item_Catalog_PostGreSQL.git /var/apps/item-catalog/staged
+sudo cp /var/app/item-catalog/staged/Item_Catalog_PostGreSQL/* /var/apps/item-catalog/recent
+sudo cp /var/app/item-catalog/staged/Item_Catalog_PostGreSQL/* /var/apps/item-catalog/version/0001/
+cd /var/app/item-catalog/staged/
+sudo rm -rf Item_Catalog_PostGreSQL
+cd /
+source /var/www/html/item-catalog/item-catalog-venv/bin/activate
+sudo pip install Flask
+sudo apt-get -y install postgresql postgresql-contrib
+sudo apt-get -y install python-psycopg2
+yes | sudo pip install SQLAlchemy
+sudo apt-get -y install python-oauth2client
+deactivate
+sudo nano 
+cat > /var/www/html/item-catalog/flaskapp.py <<- "EOF"
+activate_this = '/var/www/html/item-catalog/item-catalog-venv/bin/activate_this
+execfile(activate_this, dict(__file__=activate_this.py))
+
+import sys
+sys.path.insert(0, '/var/www/html/item-catalog')
+
+from flaskapp import app as application
+EOF
+cat > /var/www/html/item-catalog/flaskapp.wsgi <<- "EOF"
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+  return 'Hello from Flask!'
+
+if __name__ == '__main__':
+  app.run()
+EOF
+```
+
+### Apache2 Configuration
+#### Modify `conf` file
+```
+sudo nano /etc/apache2/sites-enabled/000-default.conf
+```
+- [ ] Paste the code (below) into the section immediately following the `DocumentRoot` line
+```
+		#WSGIDaemonProcess flaskapp threads=5
+        WSGIScriptAlias / /var/www/html/item-catalog/flaskapp.wsgi
+
+        <Directory item-catalog>
+                WSGIProcessGroup flaskapp
+                WSGIApplicationGroup %{GLOBAL}
+                Order deny,allow
+                Allow from all
+        </Directory>
+```
+- [ ] Save and Close
+- [ ] `sudo apache2ctl restart`
+
+### Validation
+Navigate to `35.165.146.88`
+
+### Create and Secure PostGres DB
+```
+sudo su - postgres
+psql
+```
+
+- [ ] Paste the code below into the psql window
+```
+CREATE ROLE login_role WITH login;
+CREATE ROLE access_role;
+CREATE DATABASE catalog WITH OWNER access_role;
+\c catalog
+REVOKE ALL ON SCHEMA public FROM public;
+GRANT ALL ON SCHEMA public TO access_role;
+RESET ROLE;
+GRANT access_role TO login_role;
+CREATE USER catalog;
+GRANT login_role TO catalog;
+```
+- [ ] Quit
+
+
+__________________________________________________________
+
+## Manual Processing - useful as resource
+
+### Apache
+#### Install
+```
+sudo apt-get update
+sudo apt-get install apache2
 ```
 
 - [ ] Confirm page works - default apache page
 	- Navigate to server's IP address in a browser
 	```35.165.146.88```
 
-## mod_wsgi - Install and Configure
-### Install 
+### mod_wsgi - Install and Configure
+#### Install 
 ```
 sudo apt-get -y install libapache2-mod-wsgi python-dev
-```
-
-### Enable
-```
 sudo a2enmod wsgi
 sudo apache2ctl restart
 ```
 
-### Verification
+#### Verification
 - [ ] Confirm page works - no errors
 	- Navigate to server's IP address in a browser
 	```35.165.146.88```
 
 
-## Git - Install
+### Git - Install
 ```
-sudo apt-get -y install git
+sudo apt-get install git
 ```
 
-## Pip - install
+### Pip - install
 - [ ] Ensure pip is installed locally
 ```
-sudo apt-get -y install python-pip
+sudo apt-get install python-pip
 ```
 
-## Virtualenv - install
+### Virtualenv - install
 - [ ] Ensure virtualenv is installed locally
 ```
-yes | sudo pip install virtualenv
+sudo pip install virtualenv
 ```
 
 
-## File Structure
-### Create Flask App
+### File Structure
+#### Create Flask App
 Reference: https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps  
 Reference: http://www.datasciencebytes.com/bytes/2015/02/24/running-a-flask-app-on-aws-ec2/  
 #### Create Flask Directory Structure
@@ -223,13 +325,13 @@ sudo git clone https://github.com/BramWarrick/Item_Catalog_PostGreSQL.git
 sudo mv Item_Catalog_PostGreSQL item-catalog
 ```
 
-### Create virtual environment
+#### Create virtual environment
 ```
 cd /var/www/html/item-catalog
 sudo virtualenv item-catalog-venv
 ```
 
-## Install Flask
+### Install Flask
 - [ ] Install Flask on virtual environment
 ```
 source /var/www/html/item-catalog/item-catalog-venv/bin/activate
@@ -237,11 +339,10 @@ sudo pip install Flask
 deactivate
 ```
 
-## Test Flask Install
-### Create `flaskapp.py` file
+#### Test Flask Install
+##### Create `flaskapp.py` file
 ```
-cd /var/www/html/item-catalog
-sudo nano flaskapp.py
+sudo nano /var/www/html/item-catalog/flaskapp.py
 ```
 
 - [ ] Contents:
@@ -257,9 +358,9 @@ from flaskapp import app as application
 - [ ] Save and Close
 
 
-### Create wsgi file
+##### Create wsgi file
 ```
-sudo nano flaskapp.wsgi
+sudo nano /var/www/html/item-catalog/flaskapp.wsgi
 ```
 - [ ] Contents:
 ```
@@ -275,7 +376,7 @@ if __name__ == '__main__':
 ```
 - [ ] Save and Close
 
-### Modify `conf` file
+#### Modify `conf` file
 ```
 sudo nano /etc/apache2/sites-enabled/000-default.conf
 ```
@@ -299,19 +400,7 @@ Navigate to `35.165.146.88`
 
 ~~~~~
 
-## Python modules
-### Single script
-```
-source /var/www/html/item-catalog/item-catalog-venv/bin/activate
-sudo apt-get update
-sudo apt-get -y install postgresql postgresql-contrib
-sudo apt-get -y install python-psycopg2
-yes | sudo pip install SQLAlchemy
-sudo apt-get -y install python-oauth2client
-deactivate
-```
-
-### By Library
+### Python modules
 #### PostGreSQL
 ```
 source /var/www/item-catalog/item-catalog-venv/bin/activate
