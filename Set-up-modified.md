@@ -306,12 +306,37 @@ Navigate to `35.165.146.88`
 ```
 source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get update
+sudo apt-get -y install postgresql postgresql-contrib
+sudo apt-get -y install python-psycopg2
 yes | sudo pip install SQLAlchemy
 sudo apt-get -y install python-oauth2client
-desactivate
+deactivate
 ```
 
 ### By Library
+#### PostGreSQL
+```
+source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+```
+- [ ] Confirm page works - no errors
+
+- [To Do] Add configuration instructions
+	- Do not allow remote connections
+	```
+	sudo nano /etc/postgresql/9.1/main/pg_hba.conf
+	```
+	- Create new user 'catalog'
+		- Has limited permissions on application database
+- Reference: https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps
+
+#### Psycog2
+```
+source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
+sudo apt-get -y install python-psycopg2
+```
+
 #### SQLAlchemy
 ```
 source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
@@ -326,5 +351,23 @@ sudo apt-get install python-oauth2client
 ```
 
 ## Secure db
+```
+sudo su - postgres
+psql
+```
+
+```
+CREATE ROLE login_role WITH login;
+CREATE ROLE access_role;
+CREATE DATABASE catalog WITH OWNER access_role;
+\c catalog
+REVOKE ALL ON SCHEMA public FROM public;
+GRANT ALL ON SCHEMA public TO access_role;
+RESET ROLE;
+GRANT access_role TO login_role;
+CREATE USER catalog;
+GRANT login_role TO catalog;
+```
+
 	- Create new user 'catalog'
 		- Has limited permissions on application database
