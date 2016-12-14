@@ -219,22 +219,20 @@ Reference: http://www.datasciencebytes.com/bytes/2015/02/24/running-a-flask-app-
 - [ ] Create the directories as specified below, substituting your application's name
 ```
 cd /var/www/html
-sudo mkdir item-catalog
-cd item-catalog
-sudo git clone https://github.com/BramWarrick/Item_Catalog.git
-sudo mv Item_Catalog item-catalog
+sudo git clone https://github.com/BramWarrick/Item_Catalog_PostGreSQL.git
+sudo mv Item_Catalog_PostGreSQL item-catalog
 ```
 
 ### Create virtual environment
 ```
-cd /var/www/html/item-catalog/item-catalog
+cd /var/www/html/item-catalog
 sudo virtualenv item-catalog-venv
 ```
 
 ## Install Flask
 - [ ] Install Flask on virtual environment
 ```
-source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/html/item-catalog/item-catalog-venv/bin/activate
 sudo pip install Flask
 deactivate
 ```
@@ -248,7 +246,7 @@ sudo nano flaskapp.py
 
 - [ ] Contents:
 ```
-activate_this = '/var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate_this
+activate_this = '/var/www/html/item-catalog/item-catalog-venv/bin/activate_this
 execfile(activate_this, dict(__file__=activate_this.py))
 
 import sys
@@ -304,7 +302,7 @@ Navigate to `35.165.146.88`
 ## Python modules
 ### Single script
 ```
-source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/html/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get update
 sudo apt-get -y install postgresql postgresql-contrib
 sudo apt-get -y install python-psycopg2
@@ -316,7 +314,7 @@ deactivate
 ### By Library
 #### PostGreSQL
 ```
-source /var/www/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get update
 sudo apt-get install postgresql postgresql-contrib
 ```
@@ -333,19 +331,19 @@ sudo apt-get install postgresql postgresql-contrib
 
 #### Psycog2
 ```
-source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/html/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get -y install python-psycopg2
 ```
 
 #### SQLAlchemy
 ```
-source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/html/item-catalog/item-catalog-venv/bin/activate
 sudo pip install SQLAlchemy
 ```
 
 #### oauth2client (google)
 ```
-source /var/www/html/item-catalog/item-catalog/item-catalog-venv/bin/activate
+source /var/www/html/item-catalog/item-catalog-venv/bin/activate
 sudo apt-get update
 sudo apt-get install python-oauth2client
 ```
